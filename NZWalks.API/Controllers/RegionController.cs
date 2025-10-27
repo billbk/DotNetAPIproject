@@ -122,7 +122,7 @@ namespace NZWalks.API.Controllers
         // PUT: https://localhost:portnumber/api/region/{id}
         [HttpPut]
         [Route("(id:Guid)")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdareRegionRequestDto updareRegionRequestDto )
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdareRegionRequestDto updareRegionRequestDto)
         {
             //Check if region exits
             var regionDomainModel = dbContext.Regions.FirstOrDefault(x => x.Id == id);
@@ -142,9 +142,34 @@ namespace NZWalks.API.Controllers
                 Code = regionDomainModel.Code,
                 Name = regionDomainModel.Name,
                 RegionImageUrl = regionDomainModel.RegionImageUrl
-           };
+            };
             return Ok();
         }
 
+
+        [HttpDelete]
+        [Route("(id:Guid)")]
+
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            //Check if region exits
+            var regionDomainModel = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (regionDomainModel == null)
+            {
+                return NotFound();
+            }
+            dbContext.Regions.Remove(regionDomainModel);
+            dbContext.SaveChanges();
+
+            var regionDto = new RegionDto
+            {
+                Id = regionDomainModel.Id,
+                Code = regionDomainModel.Code,
+                Name = regionDomainModel.Name,
+                RegionImageUrl = regionDomainModel.RegionImageUrl
+            };
+
+            return Ok(regionDto);
+        }
     }
 }
